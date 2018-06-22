@@ -5,6 +5,5 @@ WORKDIR /app
 ADD . /app
 
 EXPOSE 80
-ENV PORT ":80"
 
-CMD ["go", "run", "main.go", "-addr=$PORT"]
+CMD ["go", "run", "main.go", "-addr=:80"]

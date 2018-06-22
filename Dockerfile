@@ -4,6 +4,7 @@ RUN mkdir /app
 WORKDIR /app
 ADD . /app
 
-EXPOSE 8080
+EXPOSE 80
+ENV PORT ":80"
 
-CMD ["go", "run", "main.go"]
+CMD ["go", "run", "main.go", "-addr=$PORT"]

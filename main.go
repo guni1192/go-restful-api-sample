@@ -3,10 +3,14 @@ package main
 import (
   "encoding/json"
   "log"
+  "flag"
   "net/http"
 )
 
 func main() {
+  var addr = flag.String("addr", ":8080", "localhost")
+  flag.Parse()
+
   http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json; charset=UTF-8")
     w.WriteHeader(http.StatusOK)
@@ -18,7 +22,8 @@ func main() {
     }
   })
 
-  if err := http.ListenAndServe(":8080", nil); err != nil {
+  log.Println("Server is running. Port: ", *addr)
+  if err := http.ListenAndServe(*addr, nil); err != nil {
     log.Fatal("ListenAndServe: ", err)
   }
 }

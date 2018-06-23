@@ -24,10 +24,13 @@ func main() {
     if err := enc.Encode(map[string]string{"message": "Hello World!!"}); err != nil {
       log.Fatal("JSON Encode: ", err)
     }
-  })
+  }).Methods("GET")
 
-  router.HandleFunc("/users", controllers.UserIndex)
-  router.HandleFunc("/users/{id}", controllers.UserDetail)
+  router.HandleFunc("/users",      controllers.UserIndex).Methods("GET")
+  router.HandleFunc("/users/{id}", controllers.UserDetail).Methods("GET")
+  router.HandleFunc("/users",      controllers.UserCreate).Methods("POST")
+  router.HandleFunc("/users/{id}", controllers.UserUpdate).Methods("PUT")
+  router.HandleFunc("/users/{id}", controllers.UserDelete).Methods("DELETE")
 
   log.Println("Server is running. Port: ", *addr)
   if err := http.ListenAndServe(*addr, router); err != nil {

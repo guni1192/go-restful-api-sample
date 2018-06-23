@@ -6,6 +6,6 @@ import (
 
 type User struct {
   gorm.Model
-  Name string  `gorm:"size:255"`
-  Email string `gorm:"type:varchar(100);unique_index"`
+  Name string  `gorm:"size:255"; json: "name", form: "name"`
+  Email string `gorm:"type:varchar(100);unique_index" json: "email" form: "name"`
 }

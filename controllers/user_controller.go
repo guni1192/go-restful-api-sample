@@ -7,7 +7,7 @@ import (
   "github.com/jinzhu/gorm"
   _ "github.com/lib/pq"
   "github.com/guni973/go-restful-api-sample/models"
-  // "github.com/guni973/go-restful-api-sample/database"
+  "github.com/gorilla/mux"
 )
 
 var DB *gorm.DB
@@ -38,7 +38,22 @@ func UserIndex(w http.ResponseWriter, r *http.Request) {
   }
 }
 
-func UserDetail(w http.ResponseWriter, r *http.Request) {}
+func UserDetail(w http.ResponseWriter, r *http.Request) {
+  vars := mux.Vars(r)
+  user := models.User{}
+  DB.First(&user, vars["id"])
+
+  w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+  w.WriteHeader(http.StatusOK)
+
+  enc := json.NewEncoder(w)
+  enc.SetIndent("", "    ")
+
+  if err := enc.Encode(user); err != nil {
+    log.Fatal("JSON Encode: ", err)
+  }
+
+}
 func UserCreate(w http.ResponseWriter, r *http.Request) {}
 func UserUpdate(w http.ResponseWriter, r *http.Request) {}
 func UserDelete(w http.ResponseWriter, r *http.Request) {}

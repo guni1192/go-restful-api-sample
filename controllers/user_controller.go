@@ -4,7 +4,7 @@ import (
   "net/http"
   "encoding/json"
   "log"
-  // "fmt"
+  "fmt"
   "github.com/jinzhu/gorm"
   _ "github.com/lib/pq"
   "github.com/guni973/go-restful-api-sample/models"
@@ -30,12 +30,11 @@ func UserIndex(w http.ResponseWriter, r *http.Request) {
   w.Header().Set("Content-Type", "application/json; charset=UTF-8")
   w.WriteHeader(http.StatusOK)
 
-  enc := json.NewEncoder(w)
-  enc.SetIndent("", "    ")
-
-  if err := enc.Encode(users); err != nil {
+  jsonBytes, err:= json.MarshalIndent(users, "", "    ")
+  if err != nil {
     log.Fatal("JSON Encode: ", err)
   }
+  w.Write(jsonBytes)
 }
 
 func UserDetail(w http.ResponseWriter, r *http.Request) {
@@ -43,23 +42,28 @@ func UserDetail(w http.ResponseWriter, r *http.Request) {
   user := models.User{}
   DB.First(&user, vars["id"])
 
+  if err := DB.First(&user, vars["id"]).Error; err != nil {
+    fmt.Println(w, "[]")
+    return
+  }
+
   w.Header().Set("Content-Type", "application/json; charset=UTF-8")
   w.WriteHeader(http.StatusOK)
 
-  enc := json.NewEncoder(w)
-  enc.SetIndent("", "    ")
+  jsonBytes, err:= json.MarshalIndent(user, "", "    ")
+  // enc := json.NewEncoder(w)
+  // enc.SetIndent("", "    ")
 
-  if err := enc.Encode(user); err != nil {
+  // if err := enc.Encode(user); err != nil {
+  if err != nil {
     log.Fatal("JSON Encode: ", err)
   }
 
+  w.Write(jsonBytes)
 }
 
 func UserCreate(w http.ResponseWriter, r *http.Request) {
-  // vars := mux.Vars(r)
-
-  r.ParseForm()
-  user := models.User{Name: r.FormValue("name"), Email: r.FormValue("email")}
+  user := models.User{}
 
   // TODO: ErrorHandle for BadReqest
   // err != nil {
@@ -73,29 +77,32 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
   w.Header().Set("Content-Type", "application/json; charset=UTF-8")
   w.WriteHeader(http.StatusCreated)
 
-  enc := json.NewEncoder(w)
-  enc.SetIndent("", "    ")
+  jsonBytes, err:= json.MarshalIndent(user, "", "    ")
 
-  if err := enc.Encode(user); err != nil {
+  if err != nil {
     log.Fatal("JSON Encode: ", err)
   }
 
+  w.Write(jsonBytes)
 }
 
 
 func UserUpdate(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
-  r.ParseForm()
-  // TODO Not FOund
   user := models.User{}
   DB.First(&user, vars["id"])
+
+  if err := DB.First(&user, vars["id"]).Error; err != nil {
+    fmt.Fprintln(w, err)
+    return
+  }
+
   _ = json.NewDecoder(r.Body).Decode(&user)
 
   // TODO: ErrorHandle for BadReqest
   DB.Save(&user)
   //{
   //  DB.Rollback()
-  //  log.Fatal("Faild create User: ", err)
   //  w.WriteHeader(http.StatusBadRequest)
   //  fmt.Fprintln(w, err)
   //}
@@ -103,28 +110,23 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
   w.Header().Set("Content-Type", "application/json; charset=UTF-8")
   w.WriteHeader(http.StatusCreated)
 
-  enc := json.NewEncoder(w)
-  enc.SetIndent("", "    ")
+  jsonBytes, err:= json.MarshalIndent(user, "", "    ")
 
-  if err := enc.Encode(user); err != nil {
+  if err != nil {
     log.Fatal("JSON Encode: ", err)
   }
 
+  w.Write(jsonBytes)
 }
 
 func UserDelete(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
   user := models.User{}
-  DB.First(&user, vars["id"])
-  DB.Delete(&user)
-
-  w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-  w.WriteHeader(http.StatusCreated)
-
-  enc := json.NewEncoder(w)
-  enc.SetIndent("", "    ")
-
-  if err := enc.Encode(user); err != nil {
-    log.Fatal("JSON Encode: ", err)
+  if err := DB.First(&user, vars["id"]).Error; err != nil {
+    fmt.Fprintln(w, err)
+    return
   }
+
+  DB.Delete(&user)
+  w.WriteHeader(http.StatusNoContent)
 }

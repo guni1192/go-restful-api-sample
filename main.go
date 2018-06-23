@@ -5,13 +5,20 @@ import (
   "flag"
   "github.com/gorilla/mux"
   "github.com/guni973/go-restful-api-sample/controllers"
+  "github.com/guni973/go-restful-api-sample/models"
   "log"
   "net/http"
 )
 
 func main() {
   var addr = flag.String("addr", ":8080", "localhost")
+
   flag.Parse()
+
+  if flag.Arg(0) == "migrate" {
+    controllers.DB.CreateTable(&models.User{})
+    return
+  }
 
   router := mux.NewRouter().StrictSlash(true)
 

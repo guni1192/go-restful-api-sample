@@ -4,6 +4,6 @@ RUN mkdir /app
 WORKDIR /app
 ADD . /app
 
-EXPOSE 80
+EXPOSE 8080
 
-CMD ["go", "run", "main.go", "-addr=:80"]
+CMD ["go", "run", "main.go"]

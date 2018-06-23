@@ -1,12 +1,11 @@
-package main
+package database
 
 import (
   "log"
   "github.com/jinzhu/gorm"
   _ "github.com/lib/pq"
-  "models"
+  "github.com/guni973/go-restful-api-sample/models"
 )
-
 
 func main() {
   db, err := gorm.Open("postgres", "user=postgres dbname=go-rest-api sslmode=disable")
@@ -14,10 +13,10 @@ func main() {
   if err != nil {
     log.Fatal("DB Connection Error: ", err)
   }
-  defer db.Close()
+  db.LogMode(true)
 
-  db.CreateTable(&models.User{})
-  // var users []User
-  // db.Find(&users)
-  // log.Println(users)
+  var users []models.User
+  db.Find(&users)
+  log.Println(users)
+  defer db.Close()
 }

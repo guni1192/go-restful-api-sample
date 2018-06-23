@@ -5,6 +5,7 @@ import (
   "log"
   "flag"
   "net/http"
+  "github.com/guni973/go-restful-api-sample/controllers"
 )
 
 func main() {
@@ -22,8 +23,11 @@ func main() {
     }
   })
 
+  http.HandleFunc("/users", controllers.UserIndex)
+
   log.Println("Server is running. Port: ", *addr)
   if err := http.ListenAndServe(*addr, nil); err != nil {
     log.Fatal("ListenAndServe: ", err)
   }
 }
+

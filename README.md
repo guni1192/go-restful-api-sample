@@ -1,10 +1,14 @@
 # GoLang RESTful API
 
+Golang + PostgreSQL + Docker
+
+ORM: gorm
+
+
 ## Deploy
 
 ```
 $ git clone git@github.com:guni973/go-restful-api-sample
-$ cd $GOPATH/src/github.com/guni973/go-restful-api-sample
 $ docker-compose up -d
 ```
 
@@ -15,7 +19,7 @@ TODO: APIサーバがPostgreSQLが立ち上がるまで待つようにする
 ### Hello World
 
 ```
-curl -XGET -H 'Content-Type:application/json' http://localhost:8080
+$ curl -XGET -H 'Content-Type:application/json' http://localhost:8080
 ```
 
 ### Index

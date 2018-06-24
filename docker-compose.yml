@@ -1,7 +1,19 @@
 version: '3'
 
 services:
-  app:
+  api:
     build: .
+    # command: ./wait-for-postgres.sh postgres go run main.go
     ports:
-      - "8080:8080"
+      - 8080:8080
+    links:
+      - postgres
+
+  postgres:
+    image: postgres:10.1-alpine
+    environment:
+      POSTGRES_DB: go-restful
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432

@@ -6,15 +6,19 @@ import (
   "log"
   "fmt"
   "github.com/jinzhu/gorm"
-  _ "github.com/lib/pq"
+  // _ "github.com/lib/pq"
+  _ "github.com/jinzhu/gorm/dialects/postgres"
   "github.com/guni973/go-restful-api-sample/models"
   "github.com/gorilla/mux"
 )
 
 var DB *gorm.DB
 
-func init(){ var err error
-  DB, err = gorm.Open("postgres", "user=postgres dbname=go-rest-api sslmode=disable")
+func init(){
+  var err error
+  // DB, err = gorm.Open("postgres", dbinfo)
+  // DB, err = gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=go-restful sslmode=disable")
+  DB, err = gorm.Open("postgres", "host=postgres port=5432 user=postgres dbname=go-restful password=postgres sslmode=disable")
   if err != nil {
     log.Fatal("DB Connection Error: ", err)
   }

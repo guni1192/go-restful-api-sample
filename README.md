@@ -31,7 +31,7 @@ $ curl -XGET -H 'Content-Type:application/json' http://localhost:8080/users
 ### Create
 
 ```
-$ curl -d 'name=example&email=hoge@example.com' http://localhost:8080/users
+$ curl -XPOST -H 'Content-Type:application/json' http://localhost:8080/users -d '{"name": "test", "email": "hoge@example.com" }'
 ```
 
 ### Update

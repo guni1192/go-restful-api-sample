@@ -3,7 +3,6 @@ version: '3'
 services:
   api:
     build: .
-    # command: ./wait-for-postgres.sh postgres go run main.go
     ports:
       - 8080:8080
     links:
@@ -11,9 +10,14 @@ services:
 
   postgres:
     image: postgres:10.1-alpine
+    volumes:
+    - pg_data:/var/lib/pgsql
     environment:
       POSTGRES_DB: go-restful
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - 5432:5432
+
+volumes:
+  pg_data:

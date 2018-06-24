@@ -5,6 +5,7 @@ import (
   "flag"
   "github.com/gorilla/mux"
   "github.com/guni973/go-restful-api-sample/controllers"
+  "github.com/guni973/go-restful-api-sample/database"
   "github.com/guni973/go-restful-api-sample/models"
   "log"
   "net/http"
@@ -16,7 +17,7 @@ func main() {
   flag.Parse()
 
   if flag.Arg(0) == "migrate" {
-    controllers.DB.CreateTable(&models.User{})
+    database.DB.CreateTable(&models.User{})
     return
   }
 

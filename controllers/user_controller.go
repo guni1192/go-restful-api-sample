@@ -5,31 +5,17 @@ import (
   "encoding/json"
   "log"
   "fmt"
-  "github.com/jinzhu/gorm"
-  // _ "github.com/lib/pq"
   _ "github.com/jinzhu/gorm/dialects/postgres"
   "github.com/guni973/go-restful-api-sample/models"
+  "github.com/guni973/go-restful-api-sample/database"
   "github.com/gorilla/mux"
 )
 
-var DB *gorm.DB
-
-func init(){
-  var err error
-  // DB, err = gorm.Open("postgres", dbinfo)
-  // DB, err = gorm.Open("postgres", "host=localhost port=5432 user=postgres dbname=go-restful sslmode=disable")
-  DB, err = gorm.Open("postgres", "host=postgres port=5432 user=postgres dbname=go-restful password=postgres sslmode=disable")
-  if err != nil {
-    log.Fatal("DB Connection Error: ", err)
-  }
-  DB.LogMode(true)
-  DB.AutoMigrate(&models.User{})
-}
 
 
 func UserIndex(w http.ResponseWriter, r *http.Request) {
   users := []models.User{}
-  DB.Find(&users)
+  database.DB.Find(&users)
 
   w.Header().Set("Content-Type", "application/json; charset=UTF-8")
   w.WriteHeader(http.StatusOK)
@@ -44,9 +30,9 @@ func UserIndex(w http.ResponseWriter, r *http.Request) {
 func UserDetail(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
   user := models.User{}
-  DB.First(&user, vars["id"])
+  database.DB.First(&user, vars["id"])
 
-  if err := DB.First(&user, vars["id"]).Error; err != nil {
+  if err := database.DB.First(&user, vars["id"]).Error; err != nil {
     fmt.Println(w, "[]")
     return
   }
@@ -71,12 +57,12 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 
   // TODO: ErrorHandle for BadReqest
   // err != nil {
-  //   DB.Rollback()
+  //   database.DB.Rollback()
   //   log.Fatal("Faild create User: ", err)
   //   w.WriteHeader(http.StatusBadRequest)
   // }
   _ = json.NewDecoder(r.Body).Decode(&user)
-  DB.Create(&user);
+  database.DB.Create(&user);
 
   w.Header().Set("Content-Type", "application/json; charset=UTF-8")
   w.WriteHeader(http.StatusCreated)
@@ -94,9 +80,9 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 func UserUpdate(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
   user := models.User{}
-  DB.First(&user, vars["id"])
+  database.DB.First(&user, vars["id"])
 
-  if err := DB.First(&user, vars["id"]).Error; err != nil {
+  if err := database.DB.First(&user, vars["id"]).Error; err != nil {
     fmt.Fprintln(w, err)
     return
   }
@@ -104,9 +90,9 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
   _ = json.NewDecoder(r.Body).Decode(&user)
 
   // TODO: ErrorHandle for BadReqest
-  DB.Save(&user)
+  database.DB.Save(&user)
   //{
-  //  DB.Rollback()
+  //  database.DB.Rollback()
   //  w.WriteHeader(http.StatusBadRequest)
   //  fmt.Fprintln(w, err)
   //}
@@ -126,11 +112,11 @@ func UserUpdate(w http.ResponseWriter, r *http.Request) {
 func UserDelete(w http.ResponseWriter, r *http.Request) {
   vars := mux.Vars(r)
   user := models.User{}
-  if err := DB.First(&user, vars["id"]).Error; err != nil {
+  if err := database.DB.First(&user, vars["id"]).Error; err != nil {
     fmt.Fprintln(w, err)
     return
   }
 
-  DB.Delete(&user)
+  database.DB.Delete(&user)
   w.WriteHeader(http.StatusNoContent)
 }
